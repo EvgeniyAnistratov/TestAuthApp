@@ -10,12 +10,12 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./.data/postgres_data:/var/lib/postgresql
-    command: -p ${DB_PORT}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
 
   app:
     build: .
+    image: test_auth_app
     container_name: test_auth_app
-    volumes:
-      - .:/app
     depends_on:
       - db
