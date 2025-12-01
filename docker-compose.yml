@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:18.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./.data/postgres_data:/var/lib/postgresql
+    command: -p ${DB_PORT}
+
+  app:
+    build: .
+    container_name: test_auth_app
+    volumes:
+      - .:/app
+    depends_on:
+      - db
