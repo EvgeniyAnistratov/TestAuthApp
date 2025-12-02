@@ -13,9 +13,9 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
 
-  app:
-    build: .
-    image: test_auth_app
-    container_name: test_auth_app
-    depends_on:
-      - db
+  # app:
+  #   build: .
+  #   image: test_auth_app
+  #   container_name: test_auth_app
+  #   depends_on:
+  #     - db

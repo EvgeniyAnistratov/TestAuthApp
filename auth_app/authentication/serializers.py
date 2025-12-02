@@ -1,11 +1,15 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 
 class RegirstrationSerializer(serializers.ModelSerializer):
+    repeat_password = serializers.CharField(write_only=True)
+
     class Meta:
         model = get_user_model()
-        fields = ['first_name', 'last_name', 'middle_name', 'email', 'password']
+        fields = ['first_name', 'last_name', 'middle_name', 'email', 'password', 'repeat_password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -20,4 +24,21 @@ class RegirstrationSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+    def validate(self, attrs):
+        errors = dict()
+        password = attrs.get('password')
+
+        if attrs.get('repeat_password') != password:
+            errors['repeat_password'] = 'repeat_password must be equil to password'
+
+        try:
+            validate_password(password=password)
+        except ValidationError as e:
+            errors['password'] = list(e.messages)
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return super().validate(attrs)
 
