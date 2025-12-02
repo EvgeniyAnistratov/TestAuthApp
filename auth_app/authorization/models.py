@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Element(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
 
 
 class Role(models.Model):

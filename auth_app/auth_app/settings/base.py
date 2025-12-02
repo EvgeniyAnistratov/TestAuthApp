@@ -34,8 +34,8 @@ AUTH_USER_MODEL = 'users.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
     'authorization',
+    'users',
 
     'django.contrib.contenttypes',
 ]

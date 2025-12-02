@@ -3,12 +3,16 @@ import bcrypt
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 
+from authorization.models import Role
+
 
 class User(AbstractBaseUser):
     first_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     last_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     middle_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     email = models.EmailField(unique=True, blank=False)
+
+    roles = models.ManyToManyField(Role, through='UserRole')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["email"]
@@ -18,3 +22,11 @@ class User(AbstractBaseUser):
         salt = bcrypt.gensalt()
         self.password = bcrypt.hashpw(byte_password, salt)
         self._password = raw_password
+
+
+class UserRole(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'role')
