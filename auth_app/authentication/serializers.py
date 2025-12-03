@@ -4,6 +4,11 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+
+
 class RegirstrationSerializer(serializers.ModelSerializer):
     repeat_password = serializers.CharField(write_only=True)
 
@@ -41,4 +46,3 @@ class RegirstrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return super().validate(attrs)
-

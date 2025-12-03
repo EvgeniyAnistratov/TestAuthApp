@@ -9,6 +9,9 @@
   - [DJ\_ALLOWED\_HOSTS](#dj_allowed_hosts)
   - [DJ\_DEBUG](#dj_debug)
   - [DJ\_SECRET\_KEY](#dj_secret_key)
+  - [JWT\_ACCESS\_TTL](#jwt_access_ttl)
+  - [JWT\_REFRESH\_TTL](#jwt_refresh_ttl)
+  - [JWT\_SECRET\_KEY](#jwt_secret_key)
 
 ## APP_MODE
 По умолчанию: __PROD__ <br />
@@ -46,3 +49,15 @@
 ## DJ_SECRET_KEY
 По умолчанию: __<не определена>__ <br />
 Секретный ключ для Django, используемый для криптографической подписи.
+
+## JWT_ACCESS_TTL
+По умолчанию: __5__ <br />
+Время жизни access токена в минутах.
+
+## JWT_REFRESH_TTL
+По умолчанию: __48__ <br />
+Время жизни refresh токена в часах.
+
+## JWT_SECRET_KEY
+По умолчанию: __<не определена>__ <br />
+Секретный ключ для jwt библиотеки.

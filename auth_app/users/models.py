@@ -1,9 +1,8 @@
-import bcrypt
-
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 
 from authorization.models import Role
+from .utils import make_password, compare_passwords
 
 
 class User(AbstractBaseUser):
@@ -15,13 +14,18 @@ class User(AbstractBaseUser):
     roles = models.ManyToManyField(Role, through='UserRole')
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ["email"]
+    REQUIRED_FIELDS = ['email']
 
     def set_password(self, raw_password):
-        byte_password = raw_password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        self.password = bcrypt.hashpw(byte_password, salt)
+        self.password = make_password(raw_password)
         self._password = raw_password
+
+    def check_password(self, raw_password):
+        return compare_passwords(raw_password, self.password)
+
+    @property
+    def roles_list(self):
+        return [role.name for role in self.roles.all()]
 
 
 class UserRole(models.Model):
