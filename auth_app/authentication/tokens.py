@@ -24,6 +24,7 @@ def get_refresh_token(user_id: int):
         'exp': datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=settings.JWT_REFRESH_TTL),
         'uid': user_id,
         'jti': str(uuid1()),
+        'refresh': True,
     }
     return jwt.encode(payload=payload, key=settings.JWT_SECRET_KEY, algorithm=_ALGORITHM), payload
 

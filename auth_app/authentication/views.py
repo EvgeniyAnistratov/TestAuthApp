@@ -9,6 +9,7 @@ from .serializers import LoginSerializer, RegirstrationSerializer
 
 class LoginView(APIView):
     auth_manager = AuthManager()
+    authentication_classes = []
 
     def post(self, request):
         login_data = LoginSerializer(data=request.data)
@@ -27,6 +28,8 @@ class LoginView(APIView):
 
 
 class RegistrationView(APIView):
+    authentication_classes = []
+
     def post(self, request):
         registration_data = RegirstrationSerializer(data=request.data)
 
