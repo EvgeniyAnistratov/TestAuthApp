@@ -4,7 +4,7 @@ from .redis_token_manager import RedisTokenManager
 from .tokens import get_access_token, get_refresh_token
 
 
-class AuthManager:
+class AuthTokenManager:
     _User = get_user_model()
     blacklist: RedisTokenManager = RedisTokenManager(1)
     token_store: RedisTokenManager = RedisTokenManager(2)
