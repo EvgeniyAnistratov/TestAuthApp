@@ -12,6 +12,8 @@
   - [JWT\_ACCESS\_TTL](#jwt_access_ttl)
   - [JWT\_REFRESH\_TTL](#jwt_refresh_ttl)
   - [JWT\_SECRET\_KEY](#jwt_secret_key)
+  - [REDIS\_HOST](#redis_host)
+  - [REDIS\_PORT](#redis_port)
 
 ## APP_MODE
 По умолчанию: __PROD__ <br />
@@ -19,7 +21,8 @@
 
 ## DB_HOST
 По умолчанию: __db__ <br />
-Хост БД.
+Хост БД. Если приложение будет запускаться в docker контейнере, и БД тоже будет запущена в docker контейнере,
+то значение хоста должно хранить имя сервиса БД, описанного в docker-compose файле.
 
 ## DB_NAME
 По умолчанию: __test_auth_app_db__ <br />
@@ -61,3 +64,13 @@
 ## JWT_SECRET_KEY
 По умолчанию: __<не определена>__ <br />
 Секретный ключ для jwt библиотеки.
+
+## REDIS_HOST
+По умолчанию: __redis__
+Хост, на котором работает Redis. Если приложение будет запускаться в docker контейнере,
+и Redis тоже будет запущен в docker контейнере, то значение хоста должно хранить имя сервиса Redis,
+описанного в docker-compose файле.
+
+## REDIS_PORT
+По умолчанию: __6379__
+Порт, на котором работает Redis.

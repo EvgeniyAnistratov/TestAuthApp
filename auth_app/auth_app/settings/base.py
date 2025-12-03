@@ -14,8 +14,10 @@ from pathlib import Path
 
 from .utils import read_variable
 from .enums import ConfigVarType
+from ._redis import *
 from ._rest import *
 from ._token import *
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -75,7 +77,7 @@ DATABASES = {
         'NAME': read_variable('DB_NAME', ConfigVarType.STR),
         'USER': read_variable('DB_USER', ConfigVarType.STR),
         'PASSWORD': read_variable('DB_PASSWORD', ConfigVarType.STR),
-        'HOST': read_variable('DB_HOST', ConfigVarType.STR),
+        'HOST': read_variable('DB_HOST', ConfigVarType.STR, default='db', required=False),
         'PORT': read_variable('DB_PORT', ConfigVarType.INT, default=5432, required=False),
     }
 }

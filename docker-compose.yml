@@ -4,6 +4,7 @@ services:
   db:
     image: postgres:18.1-alpine
     restart: always
+    container_name: postgres_auth_app
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -13,9 +14,19 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
 
-  # app:
-  #   build: .
-  #   image: test_auth_app
-  #   container_name: test_auth_app
-  #   depends_on:
-  #     - db
+  redis:
+    image: redis:8.4.0-alpine
+    restart: always
+    container_name: redis_auth_app
+    volumes:
+      - ./.data/redis_data:/data
+    ports:
+     - "${REDIS_PORT}:${REDIS_PORT}"
+
+  app:
+    build: .
+    image: test_auth_app
+    container_name: test_auth_app
+    depends_on:
+      - db
+      - redis
