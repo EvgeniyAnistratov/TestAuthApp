@@ -1,14 +1,16 @@
+from django.conf import settings
 from rest_framework import status
+from rest_framework.authentication import get_authorization_header
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer
-from .auth_manager import AuthManager
+from .auth_token_manager import AuthTokenManager
 from .serializers import LoginSerializer, RegirstrationSerializer
 
 
 class LoginView(APIView):
-    auth_manager = AuthManager()
+    auth_manager = AuthTokenManager()
     authentication_classes = []
 
     def post(self, request):
@@ -25,6 +27,24 @@ class LoginView(APIView):
             return Response({'message': 'Wrong email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(self.auth_manager.generate_tokens(user))
+
+
+class LogoutView(APIView):
+    auth_manager = AuthTokenManager()
+
+    def post(self, request):
+        if hasattr(request, 'access_token'):
+            token = getattr(request, 'access_token')
+        else:
+            header = get_authorization_header(request)
+            token = header.replace(settings.AUTHORIZATION_HEADER_PREFIX, '').strip()
+
+        payload = getattr(request, 'access_token_payload') if hasattr(request, 'access_token_payload') else None
+
+        self.auth_manager.disable_atoken(token, payload)
+        self.auth_manager.disable_rtoken(self.request.user.id)
+
+        return Response()
 
 
 class RegistrationView(APIView):

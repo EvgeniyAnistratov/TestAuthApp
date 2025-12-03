@@ -6,7 +6,7 @@ from uuid import uuid1
 from django.conf import settings
 
 
-_ALGORITHM = 'HS256'
+__ALGORITHM = 'HS256'
 
 
 def get_access_token(user_id: int, roles: list[str]):
@@ -16,7 +16,7 @@ def get_access_token(user_id: int, roles: list[str]):
         'roles': roles,
         'jti': str(uuid1()),
     }
-    return jwt.encode(payload=payload, key=settings.JWT_SECRET_KEY, algorithm=_ALGORITHM), payload
+    return jwt.encode(payload=payload, key=settings.JWT_SECRET_KEY, algorithm=__ALGORITHM), payload
 
 
 def get_refresh_token(user_id: int):
@@ -26,8 +26,8 @@ def get_refresh_token(user_id: int):
         'jti': str(uuid1()),
         'refresh': True,
     }
-    return jwt.encode(payload=payload, key=settings.JWT_SECRET_KEY, algorithm=_ALGORITHM), payload
+    return jwt.encode(payload=payload, key=settings.JWT_SECRET_KEY, algorithm=__ALGORITHM), payload
 
 
 def decode_token(token):
-    return jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[_ALGORITHM])
+    return jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[__ALGORITHM])
