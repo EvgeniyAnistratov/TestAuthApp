@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer
-from .manager import AuthManager
+from .auth_manager import AuthManager
 from .serializers import LoginSerializer, RegirstrationSerializer
 
 
