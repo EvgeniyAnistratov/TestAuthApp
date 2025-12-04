@@ -37,8 +37,10 @@ AUTH_USER_MODEL = 'users.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'article',
     'authentication',
     'authorization',
+    'posts',
     'users',
 
     'django.contrib.contenttypes',
