@@ -9,6 +9,10 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+class RefreshSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField(required=True)
+
+
 class RegirstrationSerializer(serializers.ModelSerializer):
     repeat_password = serializers.CharField(write_only=True)
 

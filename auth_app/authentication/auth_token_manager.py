@@ -1,5 +1,11 @@
+from jwt.exceptions import InvalidTokenError
+
 from .redis_token_manager import RedisTokenManager
 from .tokens import get_access_token, get_refresh_token, decode_token
+
+
+class InvalidRefreshToken(Exception):
+    pass
 
 
 class AuthTokenManager:
@@ -37,3 +43,23 @@ class AuthTokenManager:
 
     def is_valid_token(self, jti):
         return self.blacklist.get_key(jti) is None
+
+    def decode_rtoken(self, token):
+        try:
+            payload = decode_token(token)
+        except InvalidTokenError as e:
+            raise InvalidRefreshToken(str(e))
+
+        if 'refresh' not in payload or 'jti' not in payload:
+            raise InvalidRefreshToken('Invalid refresh token')
+
+        return payload
+
+
+    def refresh_tokens(self, user, jti, token, exp):
+        if self.whitelsit.get_del_key(jti) is None or not self.is_valid_token(jti):
+            raise InvalidRefreshToken('Invalid refresh token')
+
+        self.blacklist.set_key(jti, token, exat=exp)
+
+        return self.generate_tokens(user)

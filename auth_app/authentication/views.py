@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer
-from .auth_token_manager import AuthTokenManager
+from .auth_token_manager import AuthTokenManager, InvalidRefreshToken
 from .serializers import LoginSerializer, RegirstrationSerializer, RefreshSerializer
 
 
@@ -24,7 +24,7 @@ class LoginView(APIView):
 
         user = self.__User.objects.get_user_or_none(email=login_data.data['email'])
         if user is None:
-            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'No such user'}, status=status.HTTP_404_NOT_FOUND)
 
         if not user.check_password(login_data.data['password']):
             return Response({'message': 'Wrong email or password'}, status=status.HTTP_400_BAD_REQUEST)
@@ -48,6 +48,36 @@ class LogoutView(APIView):
         self.auth_manager.disable_rtoken(self.request.user.id)
 
         return Response()
+
+
+class RefreshTokenView(APIView):
+    auth_manager = AuthTokenManager()
+    authentication_classes = []
+
+    __User = get_user_model()
+
+    def post(self, requeset):
+        refresh_data = RefreshSerializer(data=requeset.data)
+
+        if not refresh_data.is_valid():
+            return Response({'message': refresh_data.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = refresh_data.data['refresh_token']
+        try:
+            payload = self.auth_manager.decode_rtoken(token)
+        except InvalidRefreshToken as e:
+            return Response({'message': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = self.__User.objects.get_user_or_none(user_id=payload['uid'])
+        if user is None:
+            return Response({'message': 'No such user'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            new_tokens = self.auth_manager.refresh_tokens(user, payload['jti'], token, payload['exp'])
+        except InvalidRefreshToken as e:
+            return Response({'message': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(new_tokens)
 
 
 class RegistrationView(APIView):
