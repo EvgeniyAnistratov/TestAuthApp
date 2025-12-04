@@ -8,6 +8,7 @@ from .utils import make_password, compare_passwords
 
 class User(AbstractBaseUser):
     objects = UserManager()
+    default_objects = models.Manager()
 
     first_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     last_name = models.CharField(max_length=128, blank=True, null=True, default=None)

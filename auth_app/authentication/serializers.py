@@ -3,6 +3,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
+from authorization.models import Role
+from authorization.enums import RoleEnum
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -30,6 +33,8 @@ class RegirstrationSerializer(serializers.ModelSerializer):
         )
 
         user.set_password(validated_data['password'])
+        user.save()
+        user.roles.add(Role.objects.get(name=RoleEnum.USER.value))
         user.save()
 
         return user
