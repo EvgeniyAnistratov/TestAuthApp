@@ -1,25 +1,10 @@
-from django.contrib.auth import get_user_model
-
 from .redis_token_manager import RedisTokenManager
 from .tokens import get_access_token, get_refresh_token, decode_token
 
 
 class AuthTokenManager:
-    __User = get_user_model()
     blacklist: RedisTokenManager = RedisTokenManager(1)
     whitelsit: RedisTokenManager = RedisTokenManager(2)
-
-    def get_user(self, email: str):
-        try:
-            user = self.__User.objects.get(email=email)
-
-            if not user.is_active:
-                raise self.__User.DoesNotExist()
-
-        except self.__User.DoesNotExist:
-            return None
-
-        return user
 
     def generate_tokens(self, user):
         atoken, _ = get_access_token(user.id, list(user.roles.values_list('name', flat=True)))

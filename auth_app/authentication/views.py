@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authentication import get_authorization_header
 from rest_framework.views import APIView
@@ -6,12 +7,14 @@ from rest_framework.response import Response
 
 from users.serializers import UserSerializer
 from .auth_token_manager import AuthTokenManager
-from .serializers import LoginSerializer, RegirstrationSerializer
+from .serializers import LoginSerializer, RegirstrationSerializer, RefreshSerializer
 
 
 class LoginView(APIView):
     auth_manager = AuthTokenManager()
     authentication_classes = []
+
+    __User = get_user_model()
 
     def post(self, request):
         login_data = LoginSerializer(data=request.data)
@@ -19,7 +22,7 @@ class LoginView(APIView):
         if not login_data.is_valid():
             return Response({'message': login_data.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = self.auth_manager.get_user(login_data.data['email'])
+        user = self.__User.objects.get_user_or_none(email=login_data.data['email'])
         if user is None:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 

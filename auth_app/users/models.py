@@ -2,10 +2,13 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 
 from authorization.models import Role
+from .model_managers import UserManager
 from .utils import make_password, compare_passwords
 
 
 class User(AbstractBaseUser):
+    objects = UserManager()
+
     first_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     last_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     middle_name = models.CharField(max_length=128, blank=True, null=True, default=None)
