@@ -20,3 +20,8 @@ class Permission(models.Model):
     update_all_permission = models.BooleanField(default=False)
     delete_permission = models.BooleanField(default=False)
     delete_all_permission = models.BooleanField(default=False)
+
+
+class SpecificElement(models.Model):
+    name = models.CharField(max_length=254, unique=True)
+    element = models.ForeignKey(Element, on_delete=models.CASCADE)
