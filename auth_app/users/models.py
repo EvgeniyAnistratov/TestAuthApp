@@ -13,6 +13,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     middle_name = models.CharField(max_length=128, blank=True, null=True, default=None)
     email = models.EmailField(unique=True, blank=False)
+    is_active = models.BooleanField(default=True)
 
     roles = models.ManyToManyField(Role, through='UserRole')
 
@@ -29,6 +30,10 @@ class User(AbstractBaseUser):
     @property
     def roles_list(self):
         return [role.name for role in self.roles.all()]
+
+    def soft_delete(self):
+        self.is_active = False
+        self.save()
 
 
 class UserRole(models.Model):

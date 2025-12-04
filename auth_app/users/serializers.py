@@ -6,3 +6,4 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'email']
+        extra_kwargs = {'id': {'read_only': True}}
