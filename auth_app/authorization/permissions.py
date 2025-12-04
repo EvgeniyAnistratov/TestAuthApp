@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework.permissions import BasePermission
 
-from authorization.enums import ElementEnum
+from authorization.enums import ElementEnum, RoleEnum
 from authorization.models import Element, Permission
 
 
@@ -11,10 +11,21 @@ class WrongMethod(Exception):
     pass
 
 
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        if request.user is None:
+            return False
+
+        return request.user.roles.filter(name=RoleEnum.ADMIN.value).exists()
+
+
 class SpecificElementPermission(BasePermission):
     __User = get_user_model()
 
     def has_object_permission(self, request, view, obj):
+        if request.user is None:
+            return False
+
         element = Element.objects.filter(specificelement__name='{}.{}'.format(obj._meta.app_label, obj._meta.model_name))
 
         if len(element) == 0:
