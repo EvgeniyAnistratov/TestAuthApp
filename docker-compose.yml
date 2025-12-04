@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:18.1-alpine
@@ -27,6 +25,8 @@ services:
     build: .
     image: test_auth_app
     container_name: test_auth_app
+    ports:
+      - "8000:8000"
     depends_on:
       - db
       - redis
