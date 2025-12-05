@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 
 from .models import Element, Permission, Role
 from .permissions import IsAdmin
@@ -12,7 +12,6 @@ class ElementListView(ListAPIView):
 
 
 class PermissionListView(ListAPIView):
-    authentication_classes = []
     permission_classes = [IsAdmin]
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
@@ -28,6 +27,12 @@ class PermissionListView(ListAPIView):
             params['role_id'] = role_id
 
         return super().filter_queryset(queryset).filter(**params)
+
+
+class PermissionView(RetrieveUpdateAPIView):
+    permission_classes = [IsAdmin]
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
 
 
 class RoleListView(ListAPIView):

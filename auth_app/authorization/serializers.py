@@ -21,4 +21,8 @@ class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = '__all__'
-        extra_kwargs = {'id': {'read_only': True}}
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'element': {'read_only': True},
+            'role': {'read_only': True},
+        }
