@@ -1,13 +1,15 @@
 from django.db.models import Prefetch
-from django.contrib.auth import get_user_model
-
 from rest_framework.permissions import BasePermission
 
-from authorization.enums import ElementEnum, RoleEnum
-from authorization.models import Element, Permission
+from .enums import ElementEnum, RoleEnum
+from .models import Element, Permission
 
 
 class WrongMethod(Exception):
+    pass
+
+
+class MissedRequiredAttribute(Exception):
     pass
 
 
@@ -19,24 +21,75 @@ class IsAdmin(BasePermission):
         return request.user.roles.filter(name=RoleEnum.ADMIN.value).exists()
 
 
-class SpecificElementPermission(BasePermission):
-    __User = get_user_model()
+class PermissionMixin:
+    def load_element(self, model):
+        elements = Element.objects.filter(specificelement__name='{}.{}'.format(model._meta.app_label, model._meta.model_name))
+        return elements[0] if len(elements) else None
 
+    def load_permissions(self, user, element):
+        roles = user.roles.prefetch_related(
+            Prefetch('element_permissions', queryset=Permission.objects.filter(element=element))
+        )
+
+        permissions = []
+        for r in roles:
+            permissions += r.element_permissions.all()
+
+        return permissions
+
+
+class PermissionForModelMixin(PermissionMixin):
+    def get_permission_field(self):
+        raise NotImplementedError()
+
+    def has_permission(self, request, view):
+        if not hasattr(view, 'permission_for_model'):
+            raise MissedRequiredAttribute('permission_for_model attribute is missed')
+
+        if request.user is None:
+            return False
+
+        element = self.load_element(getattr(view, 'permission_for_model'))
+        if element is None:
+            return False
+
+        permissions = self.load_permissions(request.user, element)
+
+        return any([getattr(p, self.get_permission_field()) for p in permissions])
+
+
+class CreatePermission(PermissionForModelMixin, BasePermission):
+    def get_permission_field(self):
+        return 'create_permission'
+
+    def has_permission(self, request, view):
+        if request.method != 'POST':
+            return True  # Allow other methods
+
+        return super().has_permission(request, view)
+
+
+class ReadAllPermission(PermissionForModelMixin, BasePermission):
+    def get_permission_field(self):
+        return 'read_all_permission'
+
+    def has_permission(self, request, view):
+        if request.method != 'GET':
+            return True  # Allow other methods
+
+        return super().has_permission(request, view)
+
+
+class SpecificElementPermission(PermissionMixin, BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user is None:
             return False
 
-        element = Element.objects.filter(specificelement__name='{}.{}'.format(obj._meta.app_label, obj._meta.model_name))
-
-        if len(element) == 0:
+        element = self.load_element(obj)
+        if element is None:
             return False
 
-        roles = request.user.roles.prefetch_related(
-            Prefetch('element_permissions', queryset=Permission.objects.filter(element=element[0]))
-        )
-        permissions = []
-        for r in roles:
-            permissions += r.element_permissions.all()
+        permissions = self.load_permissions(request.user, element)
 
         try:
             part = self.__get_part_fieldname(request.method)
@@ -46,7 +99,7 @@ class SpecificElementPermission(BasePermission):
         owner_permission = any([getattr(p, f'{part}_permission') for p in permissions])
         all_permission = any([getattr(p, f'{part}_all_permission') for p in permissions])
 
-        return all_permission if all_permission else owner_permission and self.check_owner(obj, request.user, element[0])
+        return all_permission if all_permission else owner_permission and self.check_owner(obj, request.user, element)
 
     def __get_part_fieldname(self, method):
         if method == 'GET':
