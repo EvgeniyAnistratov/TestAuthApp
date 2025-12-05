@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from authorization.permissions import CreatePermission, ReadAllPermission, SpecificElementPermission
 
 from .models import Post, Comment
-from .serializers import PostSerializer, PostCommentSerializer
+from .serializers import PostSerializer, PostCommentSerializer, UpdatePostCommentSerializer
 
 
 class PostListCreateView(ListCreateAPIView):
@@ -36,6 +36,12 @@ class PostCommentView(RetrieveUpdateDestroyAPIView):
     permission_classes = [SpecificElementPermission]
     queryset = Comment.objects.all()
     serializer_class = PostCommentSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ['PATCH', 'PUT']:
+            return UpdatePostCommentSerializer
+
+        return super().get_serializer_class()
 
 
 class CreatePostCommentView(CreateAPIView):
