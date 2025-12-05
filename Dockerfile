@@ -13,4 +13,6 @@ RUN poetry install --no-root --no-cache
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "python3.11", "auth_app/manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT poetry run python3.11 auth_app/manage.py makemigrations && \
+           poetry run python3.11 auth_app/manage.py migrate && \
+           poetry run python3.11 auth_app/manage.py runserver 0.0.0.0:8000
