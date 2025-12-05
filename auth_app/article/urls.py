@@ -4,8 +4,8 @@ from .views import ArticleListCreateView, ArticleView, ArticleCommentListView, A
 
 urlpatterns = [
     path('', ArticleListCreateView.as_view()),
-    path('<int:pk>', ArticleView.as_view()),
-    path('<int:pk>/comments', ArticleCommentListView.as_view()),
-    path('comments', CreateArticleCommentView.as_view()),
-    path('comments/<int:pk>', ArticleCommentView.as_view()),
+    path('/<int:pk>', ArticleView.as_view()),
+    path('/<int:pk>/comments', ArticleCommentListView.as_view()),
+    path('/comments', CreateArticleCommentView.as_view()),
+    path('/comments/<int:pk>', ArticleCommentView.as_view()),
 ]
