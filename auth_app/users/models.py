@@ -36,6 +36,27 @@ class User(AbstractBaseUser):
         self.is_active = False
         self.save()
 
+    def __change_roles(self, roles, adding: bool):
+        method = getattr(self.roles, 'add' if adding else 'remove')
+        user_roles_id = [r.id for r in self.roles.all()]
+
+        if adding:
+            condition = lambda role_id: role_id not in user_roles_id
+        else:
+            condition = lambda role_id: role_id in user_roles_id
+
+        for role in roles:
+            if condition(role.id):
+                method(role)
+
+        self.save()
+
+    def add_roles(self, roles):
+        self.__change_roles(roles, True)
+
+    def delete_roles(self, roles):
+        self.__change_roles(roles, False)
+
 
 class UserRole(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
