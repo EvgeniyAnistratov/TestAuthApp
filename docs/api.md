@@ -74,7 +74,7 @@
 ```bash
 curl -X POST \
      -H "Content-Type: application/json" \
-     -d '{"first_name":"user", "email": "user@test.com", "password": "asdf1234!qbz", "repeat_password": "asdf1234!qbz"}' \
+     -d '{"first_name":"user", "email": "user@test.com", "password": "password", "repeat_password": "password"}' \
      "http://127.0.0.1:8000/auth/register"
 ```
 </details>
@@ -109,7 +109,7 @@ curl -X POST \
 ```bash
 curl -X POST \
      -H "Content-Type: application/json" \
-     -d '{"email": "user@test.com", "password": "asdf1234!qbz"}' \
+     -d '{"email": "user@test.com", "password": "password"}' \
      "http://127.0.0.1:8000/auth/login"
 ```
 </details>
