@@ -26,6 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+APPEND_SLASH=False
+
 SECRET_KEY = read_variable('DJ_SECRET_KEY', ConfigVarType.STR)
 
 DEBUG = read_variable('DJ_DEBUG', ConfigVarType.BOOL, default=False)

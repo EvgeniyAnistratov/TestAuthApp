@@ -52,12 +52,12 @@
 | Permission \ Element | ARTICLE | COMMENTS | POSTS | PROFILE | USER |
 |:---------------------|:-------:|:--------:|:-----:|:-------:|:----:|
 | READ                 | +       | +        | +     | +       | +    |
-| READ_ALL             | +       | +        | +     | +       | +    |
-| CREATE               | -       | -        | +     | +       | +    |
-| UPDATE               | -       | -        | +     | +       | +    |
-| UPDATE_ALL           | -       | -        | +     | +       | +    |
-| DELETE               | -       | -        | +     | +       | +    |
-| DELETE_ALL           | -       | -        | +     | +       | +    |
+| READ_ALL             | +       | +        | +     | +       | -    |
+| CREATE               | -       | -        | -     | -       | -    |
+| UPDATE               | -       | -        | -     | -       | -    |
+| UPDATE_ALL           | -       | -        | -     | -       | -    |
+| DELETE               | -       | -        | -     | -       | -    |
+| DELETE_ALL           | -       | +        | +     | -       | -    |
 
 ## USER
 | Permission \ Element | ARTICLE | COMMENTS | POSTS | PROFILE | USER |
