@@ -47,6 +47,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('authorization', '0004_specificelement'),
+        ('posts', '0001_initial')
     ]
 
     operations = [

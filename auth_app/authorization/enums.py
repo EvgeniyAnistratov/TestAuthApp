@@ -15,3 +15,7 @@ class RoleEnum(StrEnum):
     GUEST = 'GUEST'
     MODERATOR = 'MODERATOR'
     USER = 'USER'
+
+    @classmethod
+    def list(cls) -> list[str]:
+        return [i.value for i in RoleEnum]
