@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:18.1-alpine
-    restart: always
+    restart: on-failure
     container_name: postgres_auth_app
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -14,7 +14,7 @@ services:
 
   redis:
     image: redis:8.4.0-alpine
-    restart: always
+    restart: on-failure
     container_name: redis_auth_app
     volumes:
       - ./.data/redis_data:/data
