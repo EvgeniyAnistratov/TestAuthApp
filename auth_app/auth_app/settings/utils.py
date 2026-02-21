@@ -1,28 +1,15 @@
-from django.core.exceptions import ImproperlyConfigured
-from envparse import env, ConfigurationError
+from django.core.exceptions import ImproperlyConfigured as DjangoImproperlyConfigured
 
-from .enums import ConfigVarType
+from python_utils.settings import ConfigVarType, ImproperlyConfigured
+from python_utils.settings import read_variable as _read_variable
 
 
 def read_variable(
     name, v_type: ConfigVarType = ConfigVarType.STR, default: str | int | list[str] = None, required: bool = True
 ) -> str | int | list[str] | bool:
-    if v_type == ConfigVarType.STR:
-        value = env.str(name, default=default)
-    elif v_type == ConfigVarType.LIST_STR:
-        value = env(name, cast=list, subcast=str, default=default)
-    elif v_type == ConfigVarType.BOOL:
-        value = env.bool(name, default=default)
-    elif v_type == ConfigVarType.INT:
-        try:
-            value = env.int(name, default=default)
-        except ConfigurationError as e:
-            if 'invalid literal for int()' in str(e):
-                raise ImproperlyConfigured(f'Environment variable "{name}" is wrong.')
-            else:
-                raise e
-    else:
-        raise ImproperlyConfigured(f'Unknown v_type "{v_type}" while reading {name} variable.')
-    if (value is None or value == '') and required:
-        raise ImproperlyConfigured(f'Environment variable "{name}" is required.')
+    """Overrides the python_utils.settings.read_variable.ImproperlyConfigured exception"""
+    try:
+        value = _read_variable(name, v_type, default, required)
+    except ImproperlyConfigured as e:
+        raise DjangoImproperlyConfigured(e)
     return value

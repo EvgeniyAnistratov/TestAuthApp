@@ -1,5 +1,6 @@
+from python_utils.settings import ConfigVarType
+
 from .utils import read_variable
-from .enums import ConfigVarType
 
 _JWT_ACCESS_TTL_MINUTES = read_variable('JWT_ACCESS_TTL', ConfigVarType.INT, default=30, required=False)
 JWT_ACCESS_TTL = 60 * _JWT_ACCESS_TTL_MINUTES

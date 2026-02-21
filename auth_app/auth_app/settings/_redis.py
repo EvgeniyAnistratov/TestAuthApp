@@ -1,4 +1,5 @@
-from .enums import ConfigVarType
+from python_utils.settings import ConfigVarType
+
 from .utils import read_variable
 
 

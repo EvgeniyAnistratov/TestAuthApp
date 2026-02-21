@@ -2,7 +2,9 @@ from dotenv import load_dotenv
 from django.core.exceptions import ImproperlyConfigured
 from envparse import env
 
-from .enums import ModeEnum, ConfigVarType
+from python_utils.settings import ConfigVarType
+
+from .enums import ModeEnum
 
 
 load_dotenv()

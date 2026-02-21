@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from python_utils.settings import ConfigVarType
 
 from .utils import read_variable
-from .enums import ConfigVarType
 from ._redis import *
 from ._rest import *
 from ._token import *
