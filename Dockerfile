@@ -9,7 +9,7 @@ COPY . /app
 RUN python3.11 -m pip --no-cache-dir install --upgrade pip
 RUN pip install --no-cache-dir poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-root --no-cache
+RUN poetry install --no-cache
 
 EXPOSE 8000
 
